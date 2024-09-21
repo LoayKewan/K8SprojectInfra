@@ -18,7 +18,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: yolo5
-          image: loaykewan/my_yolo5_k8s4;
+          image: loaykewan/yolo5_k8s_project_dev:v1.0.1
           env:
             - name: region_of_sqs
               value: us-east-2
