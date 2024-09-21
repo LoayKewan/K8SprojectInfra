@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: polybottest
+  namespace: dev
+  labels:
+    app: polybottest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: polybottest
+  template:
+    metadata:
+        labels:
+          app: polybottest
+    spec:
+      containers:
+      - name: server
+        image: loaykewan/my_polybot_k8s_project_test29
+        ports:
+        - containerPort: 8443 # Ensure this matches your application's listening port
+        env:
+          - name: secret_name
+            value: loaytokensecret-for-project-tf
+          - name: TELEGRAM_APP_URL
+            value: https://loayk-k8s-new2.int-devops.click
+          - name: region_of_sqs
+            value: us-east-2
+          - name: my_cert
+            valueFrom:
+              secretKeyRef:
+                name: my-tls2-secret
+                key: cert
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: polybottest-service
+  namespace: dev
+spec:
+  selector:
+    app: polybottest
+  ports:
+    - protocol: TCP
+      port: 8443
+      targetPort: 8443
