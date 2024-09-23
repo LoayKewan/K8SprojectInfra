@@ -11,8 +11,8 @@ spec:
       app: polybottest
   template:
     metadata:
-        labels:
-          app: polybottest
+      labels:
+        app: polybottest
     spec:
       containers:
       - name: server
@@ -26,11 +26,18 @@ spec:
             value: https://loayk-k8s-new1.int-devops.click
           - name: region_of_sqs
             value: eu-west-3
-          - name: my_cert
-            valueFrom:
-              secretKeyRef:
-                name: my-tls-secret
-                key: cert
+        volumeMounts:
+          - name: my-tls-volume
+            mountPath: /usr/src/app/tls  # The directory where the certificate will be available
+      volumes:
+        - name: my-tls-volume
+          secret:
+            secretName: my-tls-secret
+            items:
+              - key: tls.crt
+                path: cert  # It will be available in the container as /usr/src/app/tls/cert
+              - key: tls.key
+                path: key   # It will be available in the container as /usr/src/app/tls/key
 ---
 apiVersion: v1
 kind: Service

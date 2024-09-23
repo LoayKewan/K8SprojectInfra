@@ -27,11 +27,18 @@ spec:
             value: https://loayk-k8s-new2.int-devops.click
           - name: region_of_sqs
             value: us-east-2
-          - name: my_cert
-            valueFrom:
-              secretKeyRef:
-                name: my-tls2-secret
-                key: cert
+        volumeMounts:
+          - name: my-tls-volume
+            mountPath: /usr/src/app/tls  # The directory where the certificate will be available
+      volumes:
+        - name: my-tls-volume
+          secret:
+            secretName: my-tls2-secret
+            items:
+              - key: tls.crt
+                path: cert  # It will be available in the container as /usr/src/app/tls/cert
+              - key: tls.key
+                path: key   # It will be available in the container as /usr/src/app/tls/key
 ---
 apiVersion: v1
 kind: Service
